@@ -1,0 +1,534 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "The Agent System of Record Service is used to create and maintain Agent Definitions in Workday.",
+    "version" : "v1",
+    "title" : "asor",
+    "x-workday-confidence-level" : "Internal",
+    "x-workday-internal-source" : "xo",
+    "x-workday-internal-routing" : "Public",
+    "x-workday-internal-protected-usage-enabled" : false,
+    "x-workday-internal-service-container-id" : "e4af3c6fa94010001113b6524d520000"
+  },
+  "host" : "api.workday.com",
+  "basePath" : "/asor/v1",
+  "tags" : [ {
+    "name" : "agentDefinition",
+    "description" : "To view and maintain Agent Definitions with the Agent System of Record.",
+    "x-workday-confidence-level" : "Internal"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/agentDefinition" : {
+      "get" : {
+        "tags" : [ "agentDefinition" ],
+        "summary" : "This operation returns the specific Agent Definition including Skills and certain Tools used in those Skills.",
+        "description" : "This operation returns the specific Agent Definition including Skills and certain Tools used in those Skills. Each definition can contain many Skills, and in those Skills they *may* contain Tools based on the Invocation / Execution Type. Generally REST APIs will be listed here.\n\n<b>Secured by:</b> Development",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. A successful response can return no matched data.",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "data" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/agentCardAndTools_a5967cb3b88b10001f7a6900b0d90000"
+                  }
+                },
+                "total" : {
+                  "type" : "integer",
+                  "format" : "int64"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "An error occurred.",
+            "schema" : {
+              "$ref" : "#/definitions/ERROR_MODEL_REFERENCE"
+            }
+          },
+          "400" : {
+            "description" : "Invalid request. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "401" : {
+            "description" : "Invalid resource or operation. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "403" : {
+            "description" : "User has insufficient permissions. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "404" : {
+            "description" : "Resource not found. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          }
+        },
+        "x-workday-confidence-level" : "Internal",
+        "x-workday-internal-try-enabled" : "false"
+      },
+      "post" : {
+        "tags" : [ "agentDefinition" ],
+        "summary" : "Based on the A2A Agent Card specification, this REST operation allows you to create an Agent Definition in Workday.",
+        "description" : "Based on the A2A Agent Card specification, this REST operation allows you to create an Agent Definition in Workday, while also highlighting the specific Workday APIs/Resources that the Agent is allowed access to. It will update an existing instance IF one already exists with the same *name*, *provider organization*, and *version*.\n\n<b>Secured by:</b> Development",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "agentCardAndTools",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/agentCardAndTools_a5967cb3b88b10001f7a6900b0d90000"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "An error occurred.",
+            "schema" : {
+              "$ref" : "#/definitions/ERROR_MODEL_REFERENCE"
+            }
+          },
+          "201" : {
+            "description" : "Resource created.",
+            "schema" : {
+              "$ref" : "#/definitions/agentCardAndTools_a5967cb3b88b10001f7a6900b0d90000"
+            }
+          },
+          "400" : {
+            "description" : "Invalid request. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "401" : {
+            "description" : "Invalid resource or operation. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "403" : {
+            "description" : "User has insufficient permissions. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          },
+          "404" : {
+            "description" : "Resource not found. (https://community.workday.com/rest/error-messages)",
+            "schema" : {
+              "$ref" : "#/definitions/VALIDATION_ERROR_MODEL_REFERENCE"
+            }
+          }
+        },
+        "x-workday-confidence-level" : "Internal",
+        "x-workday-internal-try-enabled" : "false"
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "OAuth2" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "https://i-xxxxxxxxxxxxxxxxx.workdaysuv.com/super/authorize",
+      "flow" : "implicit"
+    }
+  },
+  "definitions" : {
+    "INSTANCE_MODEL_REFERENCE" : {
+      "type" : "object",
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "wid / id / reference id",
+          "pattern" : "^(?:(?:[0-9a-f]{32})|(?:[0-9]+\\$[0-9]+)|(\\S+=\\S+))$"
+        },
+        "descriptor" : {
+          "type" : "string",
+          "description" : "A description of the instance",
+          "readOnly" : true
+        },
+        "href" : {
+          "type" : "string",
+          "description" : "A link to the instance",
+          "readOnly" : true
+        }
+      }
+    },
+    "ERROR_MODEL_REFERENCE" : {
+      "type" : "object",
+      "required" : [ "error" ],
+      "properties" : {
+        "error" : {
+          "type" : "string",
+          "description" : "A description of the error"
+        },
+        "code" : {
+          "type" : "string",
+          "description" : "The code that corresponds to the error message. Use the error code to drive programmatic error-handling behavior. Don't use error message strings for this purpose because they are subject to change"
+        },
+        "field" : {
+          "type" : "string",
+          "description" : "The field related to the error"
+        },
+        "path" : {
+          "type" : "string",
+          "description" : "The path of the field related to the error"
+        }
+      }
+    },
+    "VALIDATION_ERROR_MODEL_REFERENCE" : {
+      "allOf" : [ {
+        "type" : "object",
+        "required" : [ "error" ],
+        "properties" : {
+          "error" : {
+            "type" : "string",
+            "description" : "A description of the error"
+          },
+          "errors" : {
+            "type" : "array",
+            "description" : "An array of validation errors",
+            "items" : {
+              "$ref" : "#/definitions/ERROR_MODEL_REFERENCE"
+            }
+          }
+        }
+      } ]
+    },
+    "FACETS_MODEL_REFERENCE" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "description" : "This object represents the possible facets for this resource",
+        "readOnly" : true,
+        "properties" : {
+          "descriptor" : {
+            "type" : "string",
+            "description" : "A description of the facet"
+          },
+          "facetParameter" : {
+            "type" : "string",
+            "description" : "The alias used to select the facet"
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "the facet values",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "count" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "description" : "The number of instances returned by this facet"
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "wid / id / reference id",
+                  "pattern" : "^(?:(?:[0-9a-f]{32})|(?:[0-9]+\\$[0-9]+)|(\\S+=\\S+))$"
+                },
+                "descriptor" : {
+                  "type" : "string",
+                  "description" : "A description of the facet"
+                },
+                "href" : {
+                  "type" : "string",
+                  "description" : "A link to the instance",
+                  "readOnly" : true
+                }
+              },
+              "required" : [ "id" ]
+            }
+          }
+        }
+      }
+    },
+    "MULTIPLE_INSTANCE_MODEL_REFERENCE" : {
+      "type" : "object",
+      "properties" : {
+        "total" : {
+          "type" : "integer"
+        },
+        "data" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/INSTANCE_MODEL_REFERENCE"
+          }
+        }
+      }
+    },
+    "capabilities_799da24a09dd10000e3a424ec7340000" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/agentCapabilites_799da24a09dd10000e37766515630000"
+      }, { } ],
+      "description" : "Optional capabilities supported by the agent."
+    },
+    "provider_799da24a09dd10000b827743c6f40000" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/agentProvider_799da24a09dd10000b8025cea79e0000"
+      }, { } ],
+      "description" : "The service provider of the agent"
+    },
+    "agentCardAndTools_a5967cb3b88b10001f7a6900b0d90000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "required" : [ "description", "name", "skills", "url", "version" ],
+        "properties" : {
+          "documentationUrl" : {
+            "type" : "string",
+            "example" : "https://agent.company.com/agent1/doc",
+            "description" : "A URL to documentation for the agent.",
+            "x-workday-type" : "Text"
+          },
+          "capabilities" : {
+            "$ref" : "#/definitions/capabilities_799da24a09dd10000e3a424ec7340000"
+          },
+          "provider" : {
+            "$ref" : "#/definitions/provider_799da24a09dd10000b827743c6f40000"
+          },
+          "iconUrl" : {
+            "type" : "string",
+            "example" : "https://cdn1.iconfinder.com/data/icons/material-design-icons-light/24/link-variant-512.png",
+            "description" : "A URL to an icon for the agent.",
+            "x-workday-type" : "Text"
+          },
+          "supportsAuthenticatedExtendedCard" : {
+            "type" : "boolean",
+            "example" : true,
+            "description" : "true if the agent supports providing an extended agent card when the user is authenticated. Defaults to false if not specified.",
+            "x-workday-type" : "Boolean"
+          },
+          "defaultOutputModes" : {
+            "type" : "array",
+            "description" : "Supported media types for output.",
+            "items" : {
+              "$ref" : "#/definitions/mimeType_71f4971911331000139693324a560000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "defaultInputModes" : {
+            "type" : "array",
+            "description" : "The set of interaction modes that the agent supports across all skills. This can be overridden per-skill. Supported media types for input.",
+            "items" : {
+              "$ref" : "#/definitions/mimeType_71f4971911331000139693324a560000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "workdayConfig" : {
+            "type" : "array",
+            "description" : "Identify Workday Resources to be used in Agent Skills.",
+            "items" : {
+              "$ref" : "#/definitions/agentSkillResource_881e3f87712810000d1ba8a0a0510000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "skills" : {
+            "type" : "array",
+            "description" : "Skills are a unit of capability that an agent can perform.",
+            "items" : {
+              "$ref" : "#/definitions/agentSkill_881e3f87712810000d0bf06dae650000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "This Financial Audit Agent acts as a safeguard, offering an independent review that instills confidence in financial information.",
+            "description" : "A human-readable description of the agent. Used to assist users and other agents in understanding what the agent can do.",
+            "x-workday-type" : "Text"
+          },
+          "url" : {
+            "type" : "string",
+            "example" : "https://example.com/agent/finance",
+            "description" : "A URL to the address the agent is hosted at.",
+            "x-workday-type" : "Text"
+          },
+          "version" : {
+            "type" : "string",
+            "example" : "1.0.0",
+            "description" : "The version of the agent - format is up to the provider.",
+            "x-workday-type" : "Text"
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "Financial Audit Agent",
+            "description" : "Human readable name of the agent.",
+            "x-workday-type" : "Text"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the instance"
+          }
+        }
+      } ]
+    },
+    "agentSkillTag_71f49719113310002d130aa875ca0000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "required" : [ "tag" ],
+        "properties" : {
+          "tag" : {
+            "type" : "string",
+            "example" : "[{\"tag\":\"cooking\"}, {\"tag\":\"customer support\"}]",
+            "description" : "Will be used by the client as a hint to understand how the skill can be used.",
+            "x-workday-type" : "Text"
+          }
+        }
+      } ]
+    },
+    "agentCapabilites_799da24a09dd10000e37766515630000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "properties" : {
+          "pushNotifications" : {
+            "type" : "boolean",
+            "example" : true,
+            "description" : "true if the agent can notify updates to client.",
+            "x-workday-type" : "Boolean"
+          },
+          "streaming" : {
+            "type" : "boolean",
+            "example" : true,
+            "description" : "true if the agent supports SSE.",
+            "x-workday-type" : "Boolean"
+          },
+          "stateTransitionHistory" : {
+            "type" : "boolean",
+            "example" : true,
+            "description" : "true if the agent exposes status change history for tasks.",
+            "x-workday-type" : "Boolean"
+          }
+        }
+      } ]
+    },
+    "mimeType_71f4971911331000139693324a560000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+            "description" : "Supported media type.",
+            "maxLength" : 80,
+            "x-workday-type" : "Text"
+          }
+        }
+      } ]
+    },
+    "agentSkillResource_881e3f87712810000d1ba8a0a0510000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "properties" : {
+          "skillId" : {
+            "type" : "string",
+            "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+            "description" : "Unique identifier for the agent's skill.",
+            "x-workday-type" : "Text"
+          },
+          "workdayResources" : {
+            "type" : "array",
+            "description" : "List of Workday Resources used by this agents skill.",
+            "items" : {
+              "$ref" : "#/definitions/skillTools_881e3f877128100010f2ba3820a20000"
+            },
+            "x-workday-type" : "Multi-instance"
+          }
+        }
+      } ]
+    },
+    "agentProvider_799da24a09dd10000b8025cea79e0000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "required" : [ "organization", "url" ],
+        "properties" : {
+          "organization" : {
+            "type" : "string",
+            "example" : "Agent Provider Company Ltd.",
+            "description" : "Agent provider's organization name.",
+            "x-workday-type" : "Text"
+          },
+          "url" : {
+            "type" : "string",
+            "example" : "https://agent.company.com/agents",
+            "description" : "Agent provider's URL.",
+            "x-workday-type" : "Text"
+          }
+        }
+      } ]
+    },
+    "skillTools_881e3f877128100010f2ba3820a20000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the instance"
+          },
+          "descriptor" : {
+            "type" : "string",
+            "example" : "Lorem ipsum dolor sit ame",
+            "description" : "A preview of the instance"
+          }
+        }
+      } ]
+    },
+    "agentSkill_881e3f87712810000d0bf06dae650000" : {
+      "allOf" : [ {
+        "type" : "object",
+        "required" : [ "description", "id", "name" ],
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "example" : "This skill analyzes many financial documents in the boundary for the supervisory org.",
+            "description" : "Description of the skill - will be used by the client or a human as a hint to understand what the skill does.",
+            "x-workday-type" : "Text"
+          },
+          "id" : {
+            "type" : "string",
+            "example" : "1234",
+            "description" : "Unique identifier for the agent's skill.",
+            "x-workday-type" : "Text"
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "Financial Audit Analyzer",
+            "description" : "Human readable name of the skill.",
+            "x-workday-type" : "Text"
+          },
+          "tags" : {
+            "type" : "array",
+            "description" : "Set of tagwords describing classes of capabilities for this specific skill.",
+            "items" : {
+              "$ref" : "#/definitions/agentSkillTag_71f49719113310002d130aa875ca0000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "inputModes" : {
+            "type" : "array",
+            "description" : "The set of interaction modes that the skill supports (if different than the default).",
+            "items" : {
+              "$ref" : "#/definitions/mimeType_71f4971911331000139693324a560000"
+            },
+            "x-workday-type" : "Multi-instance"
+          },
+          "outputModes" : {
+            "type" : "array",
+            "description" : "Supported media types for output.",
+            "items" : {
+              "$ref" : "#/definitions/mimeType_71f4971911331000139693324a560000"
+            },
+            "x-workday-type" : "Multi-instance"
+          }
+        }
+      } ]
+    }
+  }
+}
