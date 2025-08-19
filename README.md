@@ -2,7 +2,8 @@
 
 ## 📋 Navigation
 - [🏠 All Versions](#)
-- [📖 Current: v1 Spec](versions/v1.md) : [📖 Current: v1 JSON](versions/v1.json)
+- [📖 Previous: v1 Spec](versions/v1.md) : [📖 Previous: v1 JSON](versions/v1.json)
+- [📖 Current: v1.1 Spec](versions/v1.1.md) : [📖 Current: v1.1 JSON](versions/v1.1.json)
 
 ---
 
@@ -79,12 +80,19 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 
 ### Creating an Agent with Multiple Skills
 
+v1.1 (2025.29)
+
 ```json
 {
   "name": "Customer Service Intelligence Agent",
   "description": "Multi-skilled agent for customer service automation and intelligence",
   "url": "https://acme.com/agent/cust",
+  "provider": {
+    "organization": "Agent Company Ltd",
+    "url": "https://agent.company.com"
+  },
   "version": "1.0.0",
+  "documentationUrl": "https://agent.company.com/agent1/doc",
   "capabilities": {
     "streaming": true
   },
@@ -98,35 +106,52 @@ A **Skill** represents a discrete, well-defined capability or function that an a
       "id": "sentiment_analysis",
       "name": "Customer Sentiment Analysis",
       "description": "Analyzes customer communication sentiment and emotional state",
-      "tags": [{"tag": "cognitive"}],
+      "outputModes": [{"type": "application/json"}],
+      "tags": [{"tag": "cognitive"}]
     },
     {
       "id": "ticket_routing",
       "name": "Intelligent Ticket Routing",
       "description": "Routes customer tickets to appropriate departments",
-      "tags": [{"tag": "integration"}],
+      "tags": [{"tag": "integration"}]
     }
   ],
   "workdayConfig": [
     {
       "skillId": "sentiment_analysis",
+      "executionMode": {
+        "mode":"Ambient"
+      },
       "workdayResources": [
         {
-          "url":"GET",
-          "operation":"https://api.workday.com/sentiment/v1"
+          "description":"This Workday tool is used to document customer feedback and produce focus analysis",
+          "tool": {
+            "id": "12345667898901231231abcdef"
+          }
+        },
+        {
+          "description":"This tool will be used with the Workday feedback data to do deep analysis.",
+          "operation": "GET: https://non-workday-api.com/feedback/model"
         }
       ]
     },
     {
       "skillId": "ticket_routing",
+      "executionMode": {
+        "mode":"Delegate"
+      },
       "workdayResources": [
         {
-          "url":"POST",
-          "operation":"https://api.workday.com/hcm/v1"
+          "description":"This Workday tool reads all previous travel bookings for user and aggregates team data.",
+          "tool": {
+            "id": "12345667898901231231abcdef"
+          }
         },
         {
-          "url":"GET",
-          "operation":"https://api.workday.com/classify/v2"
+          "description":"This Workday tool is used to find the most appropriate flight based on previous bookings and create a booking for approval",
+          "tool": {
+            "id": "abcdef0123123456456"
+          }
         }
       ]
     }
@@ -141,18 +166,18 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 ### Agent-Skill-Tool Interaction Flow
 
 ```mermaid
-agent creation
-    A[Partner Creates Agent] --> B[ASOR POST API]
-    B --> C[Creates Agent Registration]
+graph TD
+    A["Partner Creates Agent"] --> B["ASOR POST API"]
+    B --> C["Creates Agent Registration"]
 
-    D[Customer Configures Agent] --> E[ASU Created]
-    E --> F[API Client & Secret Created]
-    F --> G[API Client Stored]
+    D["Customer Configures Agent"] --> E["ASU Created"]
+    E --> F["API Client & Secret Created"]
+    F --> G["API Client Stored"]
 
-    H[Workday Tool Request] --> G[API Client used for Token]
-    H --> I[Agent Gateway Validates]
-    I --> J[Workday Tool invoked]
-    J --> I[Tool Response]
+    H["Workday Tool Request"] --> G
+    H --> I["Agent Gateway Validates"]
+    I --> J["Workday Tool invoked"]
+    J --> I
     I --> H
 ```
 
