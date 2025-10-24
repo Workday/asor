@@ -3,7 +3,8 @@
 ## 📋 Navigation
 - [🏠 All Versions](#)
 - [📖 Previous: v1 Spec](versions/v1.md) : [📖 Previous: v1 JSON](versions/v1.json)
-- [📖 Current: v1.1 Spec](versions/v1.1.md) : [📖 Current: v1.1 JSON](versions/v1.1.json)
+- [📖 Previous: v1.1 Spec](versions/v1.1.md) : [📖 Previous: v1.1 JSON](versions/v1.1.json)
+- [📖 Current: v1.2 Spec](versions/v1.2.md) : [📖 Current: v1.2 JSON](versions/v1.2.json)
 
 ---
 
@@ -15,7 +16,7 @@ The primary objective of this API is to:
 
 * Create Agents with Skills that can safely and securely access Workday data.
 * Discover broadly what capabilities customers and partners can do with other Agents and their Skills.
-* Have find grained knowledge of what individual users can access.
+* Have fine grained knowledge of what individual users can access.
 
 Comprehensive specification defining the core concepts of Agents, Skills, and Tools within the Agent System of Record Service. This document provides the foundational understanding for building and integrating with ASOR-managed agents.
 
@@ -80,7 +81,7 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 
 ### Creating an Agent with Multiple Skills
 
-v1.1 (2025.29)
+v1.2 (2025.44)
 
 ```json
 {
@@ -124,14 +125,28 @@ v1.1 (2025.29)
       },
       "workdayResources": [
         {
-          "description":"This Workday tool is used to document customer feedback and produce focus analysis",
-          "tool": {
-            "id": "12345667898901231231abcdef"
+          "tool_name": "Workday GET Workers API",  
+          "description":"This Workday tool is used to get Workers at the Org level",
+          "agent_resource": {
+            "id": "94a39e71541b468fa895955508287acd"
           }
         },
         {
           "description":"This tool will be used with the Workday feedback data to do deep analysis.",
-          "operation": "GET: https://non-workday-api.com/feedback/model"
+          "tool_name": "GET: https://non-workday-api.com/feedback/model"
+        },
+        {
+          "description":"This tool will be used to get worker information based on defined queries.",
+          "tool_name": "GET: Public Workday WQL using Active Employees Data Source.",
+          "agent_resource": {
+            "id": "3e15b2a1676d10000c9572ea9cc264b3"
+          },
+          "tools":
+          [
+            {
+              "id": "845b47537cfc47b29da4f385628a5fe2"
+            }
+          ]
         }
       ]
     },
@@ -142,15 +157,17 @@ v1.1 (2025.29)
       },
       "workdayResources": [
         {
-          "description":"This Workday tool reads all previous travel bookings for user and aggregates team data.",
-          "tool": {
-            "id": "12345667898901231231abcdef"
+          "tool_name": "Workday Case Types GET",
+          "description":"This Workday tool reads all Case Types in the Help Application",
+          "agent_resource": {
+            "id": "94f4c8460640100019b5cf1caa7d0019"
           }
         },
         {
-          "description":"This Workday tool is used to find the most appropriate flight based on previous bookings and create a booking for approval",
-          "tool": {
-            "id": "abcdef0123123456456"
+          "tool_name": "Workday Tenant Configuration for Case Management",
+          "description":"This Workday tool is used to find how this tenant configures Case Management.",
+          "agent_resource": {
+            "id": "ddc7b3fdde02100015348b8f1b4a001f"
           }
         }
       ]
