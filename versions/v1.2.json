@@ -57,7 +57,7 @@
             }
           },
           "401" : {
-            "description" : "Invalid resource or operation. (https://community.workday.com/rest/error-messages)",
+            "description" : "Unauthorized: Missing or invalid credentials. (https://community.workday.com/rest/error-messages)",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -129,7 +129,7 @@
             "content" : { }
           },
           "401" : {
-            "description" : "Invalid resource or operation. (https://community.workday.com/rest/error-messages)",
+            "description" : "Unauthorized: Missing or invalid credentials. (https://community.workday.com/rest/error-messages)",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -181,9 +181,9 @@
         "type" : "object",
         "properties" : {
           "id" : {
-            "pattern" : "^(?:(?:[0-9a-f]{32})|(?:[0-9]+\\$[0-9]+)|(\\S+=\\S+))$",
+            "pattern" : "^(([0-9a-f]{32})|(\\S+=\\S+))$",
             "type" : "string",
-            "description" : "wid / id / reference id"
+            "description" : "Workday Id or Reference Id of the instance."
           },
           "descriptor" : {
             "type" : "string",
@@ -264,9 +264,9 @@
                     "format" : "int32"
                   },
                   "id" : {
-                    "pattern" : "^(?:(?:[0-9a-f]{32})|(?:[0-9]+\\$[0-9]+)|(\\S+=\\S+))$",
+                    "pattern" : "^(([0-9a-f]{32})|(\\S+=\\S+))$",
                     "type" : "string",
-                    "description" : "wid / id / reference id"
+                    "description" : "Workday Id or Reference Id of the instance."
                   },
                   "descriptor" : {
                     "type" : "string",
@@ -323,7 +323,7 @@
       "provider_799da24a09dd10000b827743c6f40000" : {
         "description" : "The service provider of the agent",
         "allOf" : [ {
-          "$ref" : "#/components/schemas/agentProvider_799da24a09dd10000b8025cea79e0000"
+          "$ref" : "#/components/schemas/INSTANCE_MODEL_REFERENCE"
         }, {
           "type" : "object"
         } ]
@@ -461,6 +461,47 @@
           }
         } ]
       },
+      "workdayTool_a81e152b86021000158aa15c84900000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "id" : {
+              "type" : "string",
+              "description" : "Workday Id or Reference Id of the instance."
+            },
+            "descriptor" : {
+              "type" : "string",
+              "description" : "The display name of the instance",
+              "example" : "Lorem ipsum dolor sit ame"
+            }
+          }
+        } ]
+      },
+      "agentCapabilites_799da24a09dd10000e37766515630000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "pushNotifications" : {
+              "type" : "boolean",
+              "description" : "true if the agent can notify updates to client.",
+              "example" : true,
+              "x-workday-type" : "Boolean"
+            },
+            "stateTransitionHistory" : {
+              "type" : "boolean",
+              "description" : "true if the agent exposes status change history for tasks.",
+              "example" : true,
+              "x-workday-type" : "Boolean"
+            },
+            "streaming" : {
+              "type" : "boolean",
+              "description" : "true if the agent supports SSE.",
+              "example" : true,
+              "x-workday-type" : "Boolean"
+            }
+          }
+        } ]
+      },
       "workdayResources_881e3f877128100010fb617ba5260000" : {
         "allOf" : [ {
           "$ref" : "#/components/schemas/skillTools_881e3f877128100010f2ba3820a20000"
@@ -477,7 +518,7 @@
       "executionMode_d785eba56e9c10003761356522e00000" : {
         "description" : "The Execution Mode this Skill is operating in. Either Ambient, or Delegate.",
         "allOf" : [ {
-          "$ref" : "#/components/schemas/executionMode_d785eba56e9c1000375faff7483d0000"
+          "$ref" : "#/components/schemas/INSTANCE_MODEL_REFERENCE"
         }, {
           "type" : "object"
         } ]
@@ -502,6 +543,50 @@
             },
             "executionMode" : {
               "$ref" : "#/components/schemas/executionMode_d785eba56e9c10003761356522e00000"
+            }
+          }
+        } ]
+      },
+      "workdayResource_2e69afd4e86c10001fae2831c6da0000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "descriptor" : {
+              "type" : "string",
+              "description" : "The display name of the instance",
+              "example" : "Lorem ipsum dolor sit ame"
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "The id for Agent Resource (Derived)"
+            }
+          }
+        } ]
+      },
+      "mimeType_71f4971911331000139693324a560000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "type" : {
+              "maxLength" : 80,
+              "type" : "string",
+              "description" : "Supported media type.",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text"
+            }
+          }
+        } ]
+      },
+      "agentSkillTag_71f49719113310002d130aa875ca0000" : {
+        "allOf" : [ {
+          "required" : [ "tag" ],
+          "type" : "object",
+          "properties" : {
+            "tag" : {
+              "type" : "string",
+              "description" : "Will be used by the client as a hint to understand how the skill can be used.",
+              "example" : "[{\"tag\":\"cooking\"}, {\"tag\":\"customer support\"}]",
+              "x-workday-type" : "Text"
             }
           }
         } ]
@@ -574,16 +659,16 @@
               },
               "x-workday-type" : "Multi-instance"
             },
-            "description" : {
-              "type" : "string",
-              "description" : "Description of the skill - will be used by the client or a human as a hint to understand what the skill does.",
-              "example" : "This skill analyzes many financial documents in the boundary for the supervisory org.",
-              "x-workday-type" : "Text"
-            },
             "id" : {
               "type" : "string",
               "description" : "Unique identifier for the agent's skill.",
               "example" : "1234",
+              "x-workday-type" : "Text"
+            },
+            "description" : {
+              "type" : "string",
+              "description" : "Description of the skill - will be used by the client or a human as a hint to understand what the skill does.",
+              "example" : "This skill analyzes many financial documents in the boundary for the supervisory org.",
               "x-workday-type" : "Text"
             },
             "name" : {
@@ -591,79 +676,6 @@
               "description" : "Human readable name of the skill.",
               "example" : "Financial Audit Analyzer",
               "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "executionMode_d785eba56e9c1000375faff7483d0000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "mode" : {
-              "type" : "string",
-              "description" : "Execution Mode Name",
-              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "mimeType_71f4971911331000139693324a560000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "type" : {
-              "maxLength" : 80,
-              "type" : "string",
-              "description" : "Supported media type.",
-              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "agentSkillTag_71f49719113310002d130aa875ca0000" : {
-        "allOf" : [ {
-          "required" : [ "tag" ],
-          "type" : "object",
-          "properties" : {
-            "tag" : {
-              "type" : "string",
-              "description" : "Will be used by the client as a hint to understand how the skill can be used.",
-              "example" : "[{\"tag\":\"cooking\"}, {\"tag\":\"customer support\"}]",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "workdayResource_2e69afd4e86c10001fae2831c6da0000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "descriptor" : {
-              "type" : "string",
-              "description" : "The display name of the instance",
-              "example" : "Lorem ipsum dolor sit ame"
-            },
-            "id" : {
-              "type" : "string",
-              "description" : "The id for Agent Resource (Derived)"
-            }
-          }
-        } ]
-      },
-      "workdayTool_a81e152b86021000158aa15c84900000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "id" : {
-              "type" : "string",
-              "description" : "Id of the instance"
-            },
-            "descriptor" : {
-              "type" : "string",
-              "description" : "The display name of the instance",
-              "example" : "Lorem ipsum dolor sit ame"
             }
           }
         } ]
@@ -718,51 +730,6 @@
                 "$ref" : "#/components/schemas/tools_a81e152b86021000158c36e9bbdc0001"
               },
               "x-workday-type" : "Multi-instance"
-            }
-          }
-        } ]
-      },
-      "agentCapabilites_799da24a09dd10000e37766515630000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "pushNotifications" : {
-              "type" : "boolean",
-              "description" : "true if the agent can notify updates to client.",
-              "example" : true,
-              "x-workday-type" : "Boolean"
-            },
-            "stateTransitionHistory" : {
-              "type" : "boolean",
-              "description" : "true if the agent exposes status change history for tasks.",
-              "example" : true,
-              "x-workday-type" : "Boolean"
-            },
-            "streaming" : {
-              "type" : "boolean",
-              "description" : "true if the agent supports SSE.",
-              "example" : true,
-              "x-workday-type" : "Boolean"
-            }
-          }
-        } ]
-      },
-      "agentProvider_799da24a09dd10000b8025cea79e0000" : {
-        "allOf" : [ {
-          "required" : [ "organization", "url" ],
-          "type" : "object",
-          "properties" : {
-            "organization" : {
-              "type" : "string",
-              "description" : "Agent provider's organization name.",
-              "example" : "Agent Provider Company Ltd.",
-              "x-workday-type" : "Text"
-            },
-            "url" : {
-              "type" : "string",
-              "description" : "Agent provider's URL.",
-              "example" : "https://agent.company.com/agents",
-              "x-workday-type" : "Text"
             }
           }
         } ]
