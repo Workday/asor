@@ -8,6 +8,108 @@
 
 ---
 
+## 📊 Version Differences
+
+### v1.2 vs v1.1 Changes
+
+The following table outlines the key differences between API versions v1.2 and v1.1:
+
+| Feature | v1.1 | v1.2 | Impact |
+|---------|------|------|--------|
+| **Tool Configuration** | Basic `tool_name` and `description` | Enhanced with `agent_resource.id` and nested `tools` array | **ENHANCEMENT** - Better tool management and resource linking |
+| **Resource Linking** | Simple tool references | Structured `agent_resource` objects with IDs | **ENHANCEMENT** - Improved traceability and resource management |
+| **Nested Tools** | Flat tool structure | Hierarchical `tools` array within workdayResources | **NEW** - Support for tool hierarchies and dependencies |
+| **Provider ID** | Basic Text | Reference ID to identify a Provider | **ENHANCEMENT** - Rather than use basic text, we have Internal Representations of Providers which match |
+| **Execution Mode** | Basic Text | Enum Type way of identifying an Execution Mode | **ENHANCEMENT** - Rather than use basic text, you can be sure you have a correct Execution Mode |
+
+#### Migration Guide: v1.1 → v1.2
+
+**Required Changes:**
+
+1. **Update Tool Resource References**
+   ```json
+   // v1.1 (Basic tool reference)
+   {
+     "operation": "Workday GET Workers API",
+     "description": "This Workday tool is used to get Workers"
+   }
+   
+   // v1.2 (Enhanced with agent_resource)
+   {
+     "tool_name": "Workday GET Workers API",
+     "description": "This Workday tool is used to get Workers at the Org level",
+   }
+   ```
+
+2. **Implement Nested Tools Structure**
+   ```json
+   // v1.1 (Old Tool Support)
+   {
+     "operation": "Workday GET Workers API",
+     "description": "This Workday tool is used to get Workers",
+     "tool": {
+       "id": "3e15b2a1676d10000c9572ea9cc264b3"
+     }
+   }
+
+   // v1.2 (New nested tools support)
+   {
+     "tool_name": "GET: Public Workday WQL using Active Employees Data Source",
+     "description": "This tool will be used to get worker information based on defined queries.",
+     "agent_resource": {
+       "id": "3e15b2a1676d10000c9572ea9cc264b3"
+     },
+     "tools": [
+       {
+         "id": "845b47537cfc47b29da4f385628a5fe2"
+       }
+     ]
+   }
+   ```
+
+3. **Provider Details**
+   ```json
+   // v1.1 (Basic Provider reference)
+   {
+     "provider": {
+         "organization" : "Org Name",
+         "url" : "https://myorg.com"
+      }
+   }
+   
+   // v1.2 (Enhanced with Reference IDs)
+   {
+     "provider": {
+         "id" : "Provider=MyOrg"
+      }
+   }
+   ```
+
+4. **Execution Mode Details**
+   ```json
+   // v1.1 (Basic Execution Mode reference)
+   {
+     "executionMode": {
+        "mode": "Delegate"
+      }
+   }
+   
+   // v1.2 (Enhanced with Reference IDs)
+   {
+     "executionMode": {
+        "id": "Mode=Delegate"
+      }
+   }
+   ```
+
+   For a list of Providers and Certified Partners to use in the new Provider field, please contact Workday.
+
+**Backward Compatibility:**
+- v1.1 agents will not work due to required Provider and Execution Mode changes. Please make sure you update the payload to fit the new requirements.
+- ASOR Hub will display warnings for agents using deprecated patterns
+
+---
+
 ## Introduction
 
 The Workday Agent Definition API intends to facilitate the creation of Agent Definitions that can operate seamlessly with Workday tools and resources. Using industry terminology to cross frameworks and languages, this API intends to make it easy for partners and their ecosystems to allow users to interact with Workday data.
@@ -81,7 +183,7 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 
 ### Creating an Agent with Multiple Skills
 
-v1.2 (2025.44)
+v1.2 (2025.45)
 
 ```json
 {
@@ -89,8 +191,7 @@ v1.2 (2025.44)
   "description": "Multi-skilled agent for customer service automation and intelligence",
   "url": "https://acme.com/agent/cust",
   "provider": {
-    "organization": "Agent Company Ltd",
-    "url": "https://agent.company.com"
+    "id": "Provider=MyOrg"
   },
   "version": "1.0.0",
   "documentationUrl": "https://agent.company.com/agent1/doc",
@@ -121,7 +222,7 @@ v1.2 (2025.44)
     {
       "skillId": "sentiment_analysis",
       "executionMode": {
-        "mode":"Ambient"
+        "id": "Mode=Ambient"
       },
       "workdayResources": [
         {
@@ -153,7 +254,7 @@ v1.2 (2025.44)
     {
       "skillId": "ticket_routing",
       "executionMode": {
-        "mode":"Delegate"
+        "id": "Mode=Delegate"
       },
       "workdayResources": [
         {
