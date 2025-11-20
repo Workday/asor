@@ -20,6 +20,9 @@ The following table outlines the key differences between API versions v1.2 and v
 | **Resource Linking** | Simple tool references | Structured `agent_resource` objects with IDs | **ENHANCEMENT** - Improved traceability and resource management |
 | **Nested Tools** | Flat tool structure | Hierarchical `tools` array within workdayResources | **NEW** - Support for tool hierarchies and dependencies |
 | **Provider ID** | Basic Text | Reference ID to identify a Provider | **ENHANCEMENT** - Rather than use basic text, we have Internal Representations of Providers which match |
+| **Platform ID** | N/A | Reference ID to identify a Platform | **ADDITION** - We now provide information about which Platform this Agent will be running in. |
+| **External Tenant ID** | N/A | New | **ADDITION** - A referenceable ID in an external system to identify the location of this Agent Definition. |
+| **External Agent ID** | N/A | New | **ADDITION** - A referenceable ID in an external system to identify this Agent Definition. |
 | **Execution Mode** | Basic Text | Enum Type way of identifying an Execution Mode | **ENHANCEMENT** - Rather than use basic text, you can be sure you have a correct Execution Mode |
 
 #### Migration Guide: v1.1 → v1.2
@@ -99,6 +102,33 @@ The following table outlines the key differences between API versions v1.2 and v
      "executionMode": {
         "id": "Mode=Delegate"
       }
+   }
+   ```
+
+5. **Platform Details**
+   ```json
+   // NEW v1.2 (Addition)
+   {
+     "platform": {
+         "id" : "Platform=OTHER"
+      }
+   }
+   ```
+
+6. **External IDs**
+   ```json
+   // NEW v1.2 (Addition)
+   {
+     "externalAgentID" : "my-org-agent-id",
+     "externalTenantID" : "my-org-tenant-alias"
+   }
+   ```
+
+7. **Overview Message**
+   ```json
+   // NEW v1.2 (Addition)
+   {
+     "overview" : "This Agent can perform additional case duties to enable productivity. How can I assist you?"
    }
    ```
 
@@ -193,8 +223,14 @@ v1.2 (2025.45)
   "provider": {
     "id": "Provider=MyOrg"
   },
+  "platform": {
+    "id": "Platform=OTHER"
+  },
   "version": "1.0.0",
+  "overview": "Welcome to the Customer Service Agent. How may I assist you?",
   "documentationUrl": "https://agent.company.com/agent1/doc",
+  "externalAgentID": "my-org-agent-id",
+  "externalTenantID": "my-org-tenant-alias",
   "capabilities": {
     "streaming": true
   },
