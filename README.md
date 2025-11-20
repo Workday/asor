@@ -213,7 +213,7 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 
 ### Creating an Agent with Multiple Skills
 
-v1.2 (2025.45)
+v1.2 (2025.46)
 
 ```json
 {
