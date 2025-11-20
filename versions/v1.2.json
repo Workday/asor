@@ -125,7 +125,7 @@
             }
           },
           "400" : {
-            "description" : "Invalid request. (https://community.workday.com/rest/error-messages)\nError Code | Validation Message\n--- | ---\nA2849 | Create an agent ID sequence generator using the Edit Tenant Setup - System task before registering agents.",
+            "description" : "Invalid request. (https://community.workday.com/rest/error-messages)\nError Code | Validation Message\n--- | ---\nA161 | You can't select Workday as the agent platform for third-party agents. Select a different platform.\nA2849 | Create an agent ID sequence generator using the Edit Tenant Setup - System task before registering agents.\nA3015 | The External Agent ID must be unique for Agent Definitions with the same Provider.",
             "content" : { }
           },
           "401" : {
@@ -354,6 +354,14 @@
           }
         } ]
       },
+      "platform_ca94626efa9010003262e35486130000" : {
+        "description" : "The platform of the agent.",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/agentPlatform_aa793a5c168d1000143f8b9f05c50000"
+        }, {
+          "type" : "object"
+        } ]
+      },
       "defaultOutputModes_71f497191133100013c9a17716d50001" : {
         "allOf" : [ {
           "$ref" : "#/components/schemas/mimeType_71f4971911331000139693324a560000"
@@ -372,6 +380,13 @@
           "required" : [ "description", "name", "skills", "url", "version" ],
           "type" : "object",
           "properties" : {
+            "overview" : {
+              "type" : "string",
+              "description" : "The overview message for the agent.",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text",
+              "x-workday-confidence-level" : "Exotic"
+            },
             "defaultInputModes" : {
               "type" : "array",
               "description" : "The set of interaction modes that the agent supports across all skills. This can be overridden per-skill. Supported media types for input.",
@@ -400,6 +415,20 @@
             },
             "capabilities" : {
               "$ref" : "#/components/schemas/capabilities_799da24a09dd10000e3a424ec7340000"
+            },
+            "externalTenantID" : {
+              "type" : "string",
+              "description" : "Used to identify the tenant for agents not owned or managed by Workday.",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text",
+              "x-workday-confidence-level" : "Exotic"
+            },
+            "externalAgentID" : {
+              "type" : "string",
+              "description" : "External system’s identifier for agents not owned or managed by Workday.",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text",
+              "x-workday-confidence-level" : "Exotic"
             },
             "provider" : {
               "$ref" : "#/components/schemas/provider_799da24a09dd10000b827743c6f40000"
@@ -450,6 +479,9 @@
               "example" : true,
               "x-workday-type" : "Boolean"
             },
+            "platform" : {
+              "$ref" : "#/components/schemas/platform_ca94626efa9010003262e35486130000"
+            },
             "defaultOutputModes" : {
               "type" : "array",
               "description" : "Supported media types for output.",
@@ -457,6 +489,125 @@
                 "$ref" : "#/components/schemas/defaultOutputModes_71f497191133100013c9a17716d50001"
               },
               "x-workday-type" : "Multi-instance"
+            }
+          }
+        } ]
+      },
+      "mimeType_71f4971911331000139693324a560000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "type" : {
+              "maxLength" : 80,
+              "type" : "string",
+              "description" : "Supported media type.",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text"
+            }
+          }
+        } ]
+      },
+      "tags_71f49719113310002d148ce3f5370002" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/agentSkillTag_71f49719113310002d130aa875ca0000"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "id" : {
+              "type" : "string",
+              "description" : "The id for Agent Definition Skill Tag (Derived)"
+            }
+          }
+        } ]
+      },
+      "inputModes_71f49719113310002d148ce3f5370001" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/mimeType_71f4971911331000139693324a560000"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "id" : {
+              "type" : "string",
+              "description" : "The id for Mime Type (Derived)"
+            }
+          }
+        } ]
+      },
+      "outputModes_71f49719113310002d148ce3f5370000" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/mimeType_71f4971911331000139693324a560000"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "id" : {
+              "type" : "string",
+              "description" : "The id for Mime Type (Derived)"
+            }
+          }
+        } ]
+      },
+      "agentSkill_881e3f87712810000d0bf06dae650000" : {
+        "allOf" : [ {
+          "required" : [ "description", "id", "name" ],
+          "type" : "object",
+          "properties" : {
+            "tags" : {
+              "type" : "array",
+              "description" : "Set of tagwords describing classes of capabilities for this specific skill.",
+              "items" : {
+                "$ref" : "#/components/schemas/tags_71f49719113310002d148ce3f5370002"
+              },
+              "x-workday-type" : "Multi-instance"
+            },
+            "inputModes" : {
+              "type" : "array",
+              "description" : "The set of interaction modes that the skill supports (if different than the default).",
+              "items" : {
+                "$ref" : "#/components/schemas/inputModes_71f49719113310002d148ce3f5370001"
+              },
+              "x-workday-type" : "Multi-instance"
+            },
+            "outputModes" : {
+              "type" : "array",
+              "description" : "Supported media types for output.",
+              "items" : {
+                "$ref" : "#/components/schemas/outputModes_71f49719113310002d148ce3f5370000"
+              },
+              "x-workday-type" : "Multi-instance"
+            },
+            "description" : {
+              "type" : "string",
+              "description" : "Description of the skill - will be used by the client or a human as a hint to understand what the skill does.",
+              "example" : "This skill analyzes many financial documents in the boundary for the supervisory org.",
+              "x-workday-type" : "Text"
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "Unique identifier for the agent's skill.",
+              "example" : "1234",
+              "x-workday-type" : "Text"
+            },
+            "name" : {
+              "type" : "string",
+              "description" : "Human readable name of the skill.",
+              "example" : "Financial Audit Analyzer",
+              "x-workday-type" : "Text"
+            }
+          }
+        } ]
+      },
+      "workdayResource_2e69afd4e86c10001fae2831c6da0000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "descriptor" : {
+              "type" : "string",
+              "description" : "The display name of the instance",
+              "example" : "Lorem ipsum dolor sit ame"
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "The id for Agent Resource (Derived)"
             }
           }
         } ]
@@ -473,6 +624,28 @@
               "type" : "string",
               "description" : "The display name of the instance",
               "example" : "Lorem ipsum dolor sit ame"
+            }
+          }
+        } ]
+      },
+      "agentPlatform_aa793a5c168d1000143f8b9f05c50000" : {
+        "allOf" : [ {
+          "type" : "object",
+          "properties" : {
+            "reference_id" : {
+              "type" : "string",
+              "description" : "Reference ID for the Instance of Agent Platform",
+              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
+              "x-workday-type" : "Text"
+            },
+            "descriptor" : {
+              "type" : "string",
+              "description" : "The display name of the instance",
+              "example" : "Lorem ipsum dolor sit ame"
+            },
+            "id" : {
+              "type" : "string",
+              "description" : "Workday Id or Reference Id of the instance."
             }
           }
         } ]
@@ -547,139 +720,6 @@
           }
         } ]
       },
-      "workdayResource_2e69afd4e86c10001fae2831c6da0000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "descriptor" : {
-              "type" : "string",
-              "description" : "The display name of the instance",
-              "example" : "Lorem ipsum dolor sit ame"
-            },
-            "id" : {
-              "type" : "string",
-              "description" : "The id for Agent Resource (Derived)"
-            }
-          }
-        } ]
-      },
-      "mimeType_71f4971911331000139693324a560000" : {
-        "allOf" : [ {
-          "type" : "object",
-          "properties" : {
-            "type" : {
-              "maxLength" : 80,
-              "type" : "string",
-              "description" : "Supported media type.",
-              "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "agentSkillTag_71f49719113310002d130aa875ca0000" : {
-        "allOf" : [ {
-          "required" : [ "tag" ],
-          "type" : "object",
-          "properties" : {
-            "tag" : {
-              "type" : "string",
-              "description" : "Will be used by the client as a hint to understand how the skill can be used.",
-              "example" : "[{\"tag\":\"cooking\"}, {\"tag\":\"customer support\"}]",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
-      "tags_71f49719113310002d148ce3f5370002" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/agentSkillTag_71f49719113310002d130aa875ca0000"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "id" : {
-              "type" : "string",
-              "description" : "The id for Agent Definition Skill Tag (Derived)"
-            }
-          }
-        } ]
-      },
-      "inputModes_71f49719113310002d148ce3f5370001" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/mimeType_71f4971911331000139693324a560000"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "id" : {
-              "type" : "string",
-              "description" : "The id for Mime Type (Derived)"
-            }
-          }
-        } ]
-      },
-      "outputModes_71f49719113310002d148ce3f5370000" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/mimeType_71f4971911331000139693324a560000"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "id" : {
-              "type" : "string",
-              "description" : "The id for Mime Type (Derived)"
-            }
-          }
-        } ]
-      },
-      "agentSkill_881e3f87712810000d0bf06dae650000" : {
-        "allOf" : [ {
-          "required" : [ "description", "id", "name" ],
-          "type" : "object",
-          "properties" : {
-            "tags" : {
-              "type" : "array",
-              "description" : "Set of tagwords describing classes of capabilities for this specific skill.",
-              "items" : {
-                "$ref" : "#/components/schemas/tags_71f49719113310002d148ce3f5370002"
-              },
-              "x-workday-type" : "Multi-instance"
-            },
-            "inputModes" : {
-              "type" : "array",
-              "description" : "The set of interaction modes that the skill supports (if different than the default).",
-              "items" : {
-                "$ref" : "#/components/schemas/inputModes_71f49719113310002d148ce3f5370001"
-              },
-              "x-workday-type" : "Multi-instance"
-            },
-            "outputModes" : {
-              "type" : "array",
-              "description" : "Supported media types for output.",
-              "items" : {
-                "$ref" : "#/components/schemas/outputModes_71f49719113310002d148ce3f5370000"
-              },
-              "x-workday-type" : "Multi-instance"
-            },
-            "id" : {
-              "type" : "string",
-              "description" : "Unique identifier for the agent's skill.",
-              "example" : "1234",
-              "x-workday-type" : "Text"
-            },
-            "description" : {
-              "type" : "string",
-              "description" : "Description of the skill - will be used by the client or a human as a hint to understand what the skill does.",
-              "example" : "This skill analyzes many financial documents in the boundary for the supervisory org.",
-              "x-workday-type" : "Text"
-            },
-            "name" : {
-              "type" : "string",
-              "description" : "Human readable name of the skill.",
-              "example" : "Financial Audit Analyzer",
-              "x-workday-type" : "Text"
-            }
-          }
-        } ]
-      },
       "agent_resource_2e69afd4e86c10001ad2755763bc0000" : {
         "description" : "The Workday Resource for this Tools if applicable.",
         "allOf" : [ {
@@ -711,7 +751,7 @@
               "description" : "Description of the Operation.",
               "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
               "x-workday-type" : "Text",
-              "x-workday-confidence-level" : "Internal"
+              "x-workday-confidence-level" : "Exotic"
             },
             "agent_resource" : {
               "$ref" : "#/components/schemas/agent_resource_2e69afd4e86c10001ad2755763bc0000"
@@ -721,7 +761,7 @@
               "description" : "Name of the Operation.",
               "example" : "Lorem ipsum dolor sit amet, cum choro singulis consectetuer ut, ubique iisque contentiones ex duo. Quo lorem etiam eu.",
               "x-workday-type" : "Text",
-              "x-workday-confidence-level" : "Internal"
+              "x-workday-confidence-level" : "Exotic"
             },
             "tools" : {
               "type" : "array",
@@ -730,6 +770,20 @@
                 "$ref" : "#/components/schemas/tools_a81e152b86021000158c36e9bbdc0001"
               },
               "x-workday-type" : "Multi-instance"
+            }
+          }
+        } ]
+      },
+      "agentSkillTag_71f49719113310002d130aa875ca0000" : {
+        "allOf" : [ {
+          "required" : [ "tag" ],
+          "type" : "object",
+          "properties" : {
+            "tag" : {
+              "type" : "string",
+              "description" : "Will be used by the client as a hint to understand how the skill can be used.",
+              "example" : "[{\"tag\":\"cooking\"}, {\"tag\":\"customer support\"}]",
+              "x-workday-type" : "Text"
             }
           }
         } ]
