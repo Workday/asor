@@ -1,4 +1,4 @@
-# Agent Analytics and Metrics Schema
+# Agent Analytics and Metrics Schema 
 
 We will be providing a process for your organization to send operational data to Workday, allowing administrators to view all agent analytics unified in ASOR, across all agents, as well as per agent. More information about how to send the data to Workday will come soon. Once the custom agent analytics setup is complete, the operational analytics shown will be the same for Workday Built Agents and your organization's custom-built agents. As part of our initial release, we will be displaying operational usage related metrics, such as number of sessions, users, agent, and skill invocations.
 
@@ -22,10 +22,10 @@ Represents an agent invoking another agent, often referred to as A2A
 
 | Property | Required | Type | Description | Examples |
 |----------|----------|------|-------------|----------|
-| gen_ai.agent.id | Yes | string | A365 Id of the agent being invoked | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
+| gen_ai.agent.id | Yes | string | Platform Id of the agent being invoked | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
 | gen_ai.agent.name | Yes | string | Name of the target agent | GraphAgent, ScrumAssistant |
 | gen_ai.agent.description | | string | Description of the target agent | Looks up Graph; Helps with scrum |
-| gen_ai.agent.userid | | string | A365 user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
+| gen_ai.agent.userid | | string | Platform user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
 | server.address | | string | Endpoint of the target agent | app-web-aj5i4udhgrqgm.azurewebsites.net |
 | server.port | | string | Port of the target agent | 80; 8080; 443; |
 | gen_ai.input.messages | | string | Request from the agent call | Here is the org structure: ... |
@@ -44,10 +44,10 @@ Traces of tool calls, such as invoking a function.
 
 | Property | Required | Type | Description | Examples |
 |----------|----------|------|-------------|----------|
-| gen_ai.agent.id | Yes | string | A365 Id of the agent performing the operation | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
+| gen_ai.agent.id | Yes | string | Platform Id of the agent performing the operation | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
 | gen_ai.agent.name | Yes | string | Name of the agent | GraphAgent, ScrumAssistant |
 | gen_ai.agent.description | | string | Description of the agent | Looks up Graph; Helps with scrum |
-| gen_ai.agent.userid | | string | A365 user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
+| gen_ai.agent.userid | | string | Platform user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
 | gen_ai.tool.call.id | | string | Id of the tool call | call_xmS8WyT3sBrSVbX1uedGw2CA |
 | gen_ai.tool.name | | string | Name of the tool | get-current-user-email |
 | gen_ai.tool.description | | string | Description of the tool | get current user email address |
@@ -63,10 +63,10 @@ Traces of inference calls to AI models, such as OpenAI, Azure OpenAI, or other L
 
 | Property | Required | Type | Description | Examples |
 |----------|----------|------|-------------|----------|
-| gen_ai.agent.id | Yes | string | A365 Id of the agent performing the operation | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
+| gen_ai.agent.id | Yes | string | Platform Id of the agent performing the operation | 30ed5699-b157-4e87-bb45-9b0cfb13b8e5 |
 | gen_ai.agent.name | Yes | string | Name of the agent | GraphAgent, ScrumAssistant |
 | gen_ai.agent.description | | string | Description of the agent | Looks up Graph; Helps with scrum |
-| gen_ai.agent.userid | Yes | string | A365 user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
+| gen_ai.agent.userid | Yes | string | Platform user ID of the agent | 77679922-4623-4b74-81df-9cb111735e3c |
 | gen_ai.provider.name | | string | AI System used | openai |
 | gen_ai.request.model | | string | Model used for inference | gpt-4o |
 | gen_ai.usage.input_tokens | | int | | 133 |
