@@ -1,142 +1,11 @@
 # Workday Agent Definition API
 
 ## 📋 Navigation
-- [🏠 All Versions](#)
-- [📖 Previous: v1 Spec](versions/v1.md) : [📖 Previous: v1 JSON](versions/v1.json)
-- [📖 Previous: v1.1 Spec](versions/v1.1.md) : [📖 Previous: v1.1 JSON](versions/v1.1.json)
+
+- [Observability](observability.md)
+- [Considerations](considerations.md)
+  
 - [📖 Current: v1.2 Spec](versions/v1.2.md) : [📖 Current: v1.2 JSON](versions/v1.2.json)
-
----
-
-## 📊 Version Differences
-
-### v1.2 vs v1.1 Changes
-
-The following table outlines the key differences between API versions v1.2 and v1.1:
-
-| Feature | v1.1 | v1.2 | Impact |
-|---------|------|------|--------|
-| **Tool Configuration** | Basic `tool_name` and `description` | Enhanced with `agent_resource.id` and nested `tools` array | **ENHANCEMENT** - Better tool management and resource linking |
-| **Resource Linking** | Simple tool references | Structured `agent_resource` objects with IDs | **ENHANCEMENT** - Improved traceability and resource management |
-| **Nested Tools** | Flat tool structure | Hierarchical `tools` array within workdayResources | **NEW** - Support for tool hierarchies and dependencies |
-| **Provider ID** | Basic Text | Reference ID to identify a Provider | **ENHANCEMENT** - Rather than use basic text, we have Internal Representations of Providers which match |
-| **Platform ID** | N/A | Reference ID to identify a Platform | **ADDITION** - We now provide information about which Platform this Agent will be running in. |
-| **External Tenant ID** | N/A | New | **ADDITION** - A referenceable ID in an external system to identify the location of this Agent Definition. |
-| **External Agent ID** | N/A | New | **ADDITION** - A referenceable ID in an external system to identify this Agent Definition. |
-| **Execution Mode** | Basic Text | Enum Type way of identifying an Execution Mode | **ENHANCEMENT** - Rather than use basic text, you can be sure you have a correct Execution Mode |
-
-#### Migration Guide: v1.1 → v1.2
-
-**Required Changes:**
-
-1. **Update Tool Resource References**
-   ```json
-   // v1.1 (Basic tool reference)
-   {
-     "operation": "Workday GET Workers API",
-     "description": "This Workday tool is used to get Workers"
-   }
-   
-   // v1.2 (Enhanced with agent_resource)
-   {
-     "tool_name": "Workday GET Workers API",
-     "description": "This Workday tool is used to get Workers at the Org level",
-   }
-   ```
-
-2. **Implement Nested Tools Structure**
-   ```json
-   // v1.1 (Old Tool Support)
-   {
-     "operation": "Workday GET Workers API",
-     "description": "This Workday tool is used to get Workers",
-     "tool": {
-       "id": "3e15b2a1676d10000c9572ea9cc264b3"
-     }
-   }
-
-   // v1.2 (New nested tools support)
-   {
-     "tool_name": "GET: Public Workday WQL using Active Employees Data Source",
-     "description": "This tool will be used to get worker information based on defined queries.",
-     "agent_resource": {
-       "id": "3e15b2a1676d10000c9572ea9cc264b3"
-     },
-     "tools": [
-       {
-         "id": "845b47537cfc47b29da4f385628a5fe2"
-       }
-     ]
-   }
-   ```
-
-3. **Provider Details**
-   ```json
-   // v1.1 (Basic Provider reference)
-   {
-     "provider": {
-         "organization" : "Org Name",
-         "url" : "https://myorg.com"
-      }
-   }
-   
-   // v1.2 (Enhanced with Reference IDs)
-   {
-     "provider": {
-         "id" : "Provider=MyOrg"
-      }
-   }
-   ```
-
-4. **Execution Mode Details**
-   ```json
-   // v1.1 (Basic Execution Mode reference)
-   {
-     "executionMode": {
-        "mode": "Delegate"
-      }
-   }
-   
-   // v1.2 (Enhanced with Reference IDs)
-   {
-     "executionMode": {
-        "id": "Mode=Delegate"
-      }
-   }
-   ```
-
-5. **Platform Details**
-   ```json
-   // NEW v1.2 (Addition)
-   {
-     "platform": {
-         "id" : "Platform=OTHER"
-      }
-   }
-   ```
-
-6. **External IDs**
-   ```json
-   // NEW v1.2 (Addition)
-   {
-     "externalAgentID" : "my-org-agent-id",
-     "externalTenantID" : "my-org-tenant-alias"
-   }
-   ```
-
-7. **Overview Message**
-   ```json
-   // NEW v1.2 (Addition)
-   {
-     "overview" : "This Agent can perform additional case duties to enable productivity. How can I assist you?"
-   }
-   ```
-
-   For a list of Providers and Certified Partners to use in the new Provider field, please contact Workday.
-
-**Backward Compatibility:**
-- v1.1 agents will not work due to required Provider and Execution Mode changes. Please make sure you update the payload to fit the new requirements.
-- ASOR Hub will display warnings for agents using deprecated patterns
 
 ---
 
@@ -184,7 +53,7 @@ A **Delegate** agent can be defined as an agent which is invoked by a human, eit
 | Phase | Description | ASOR API Operation |
 |-------|-------------|-------------------|
 | **Registration** | Agent is defined and registered in the system | `POST /agentDefinition` |
-| **Discovery** | Agent capabilities are made discoverable | Agent Card at `GET /agentDefinition` |
+| **Discovery** | Agent capabilities are made discoverable | Agent Card at `GET /agentDefinition{id}` |
 | **Activation** / **Configuration** | Agent is configured with Workday security and becomes available for task execution | Status updates via ASOR Hub |
 | **Operation** | Agent executes skills and collaborates | Skill invocation and tool usage with visibility in ASOR Hub |
 | **Evolution** | Agent capabilities are updated/enhanced | `PUT /agentDefinition/{id}` (WIP) |
@@ -213,7 +82,7 @@ A **Skill** represents a discrete, well-defined capability or function that an a
 
 ### Creating an Agent with Multiple Skills
 
-v1.2 (2025.46)
+v1.2 (2026.05)
 
 ```json
 {
@@ -336,6 +205,8 @@ graph TD
 ```
 
 In this example, the Agent is executing in a non-Workday ecosystem but importantly requires a Workday Financial API to complete it's analysis. It will forward the request to Workdays Agent Gateway, which validates the appropriate security groups defined when the Agent was configuered in the customers tenant.
+
+For more Agent Development Considerations see the Consideration Link [here](consideration.md)
 
 ---
 
